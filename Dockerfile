@@ -14,24 +14,39 @@ ARG AZURE_VERSION=2.2.0
 RUN apk add --update curl bash git
 
 # Kubernetes CLI
-RUN curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl && \
-	chmod +x ./kubectl && \
-	mv ./kubectl /usr/local/bin/kubectl
+RUN if [ `uname -m` = "aarch64" ] ; then  \
+        arch="arm64"; \
+    else  \
+        arch="amd64";  \
+    fi && \
+        curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/${arch}/kubectl && \
+        chmod +x ./kubectl && \
+        mv ./kubectl /usr/local/bin/kubectl
 
 # Helm 2
-RUN curl -s -LO https://get.helm.sh/helm-v${HELM2_VERSION}-linux-amd64.tar.gz && \
-	tar -zxvf helm-v${HELM2_VERSION}-linux-amd64.tar.gz && \
-	mv linux-amd64/helm /usr/local/bin/helm && \
-	rm -rf helm-v${HELM2_VERSION}-linux-amd64.tar.gz
+RUN if [ `uname -m` = "aarch64" ] ; then  \
+        arch="arm64"; \
+    else \
+        arch="amd64"; \
+    fi && \
+        curl -s -LO https://get.helm.sh/helm-v${HELM2_VERSION}-linux-${arch}.tar.gz && \
+        tar -zxvf helm-v${HELM2_VERSION}-linux-${arch}.tar.gz && \
+        mv linux-${arch}/helm /usr/local/bin/helm && \
+        rm -rf helm-v${HELM2_VERSION}-linux-${arch}.tar.gz
 
 # Helm 3
-RUN curl -s -LO https://get.helm.sh/helm-v${HELM3_VERSION}-linux-amd64.tar.gz && \
-	tar -zxvf helm-v${HELM3_VERSION}-linux-amd64.tar.gz && \
-	mv linux-amd64/helm /usr/local/bin/helm3 && \
-	rm -rf helm-v${HELM3_VERSION}-linux-amd64.tar.gz
+RUN if [ `uname -m` = "aarch64" ] ; then \
+        arch="arm64"; \
+    else \
+        arch="amd64"; \
+    fi && \
+        curl -s -LO https://get.helm.sh/helm-v${HELM3_VERSION}-linux-${arch}.tar.gz && \
+        tar -zxvf helm-v${HELM3_VERSION}-linux-${arch}.tar.gz && \
+        mv linux-${arch}/helm /usr/local/bin/helm3 && \
+        rm -rf helm-v${HELM3_VERSION}-linux-${arch}.tar.gz
 
 # Azure CLI
-RUN apk add --update py-pip && \
-	apk add --update --virtual=build gcc libffi-dev musl-dev openssl-dev python-dev make 2>&1 | tee file.txt && \
-	pip --no-cache-dir install azure-cli==${AZURE_VERSION} 2>&1 | tee file.txt && \
+RUN apk add --update py-pip 2>&1 > log1.log && \
+	apk add --update --virtual=build gcc libffi-dev musl-dev openssl-dev python-dev make 2>&1 > log2.log && \
+	pip --no-cache-dir install azure-cli==${AZURE_VERSION} 2>&1 > log3.log && \
 	apk del --purge build
