@@ -2,8 +2,6 @@ language: minimal
 
 dist: focal
 
-install: travis_wait 30 mvn install
-
 branches:
   only: 
     - master
@@ -21,7 +19,7 @@ before_script:
 script:
   - echo "Build local image"
   - docker login -u subham328 -p Ak@sh328
-  - travis_wait docker buildx build --platform linux/amd64,linux/arm64 -t subham328/alpine-ci-tools:2.1 --push . > /dev/null 2>&1
+  - travis_wait 30 docker buildx build --platform linux/amd64,linux/arm64 -t subham328/alpine-ci-tools:2.1 --push . > /dev/null 2>&1
   - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" kubectl version --client
   - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm version --client
   - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm3 version --client
