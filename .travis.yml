@@ -22,7 +22,6 @@ script:
   - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" kubectl version --client
   - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm version --client
   - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm3 version --client
-  - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" az --version 
 
 before_deploy:
   - docker login -u subhamkumarpuresoftware -p Ak@sh328
