@@ -24,7 +24,7 @@ script:
   - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm3 version --client
 
 before_deploy:
-  - docker login -u subhamkumarpuresoftware -p Ak@sh328
+  - docker login -u subham328 -p Ak@sh328
   
 deploy:
   provider: script
