@@ -1,30 +1,32 @@
 language: minimal
 
-dist: focal
-
 branches:
   only: 
     - master
-
+    
+arch:
+  - amd64
+  - arm64
+   
 services:
   - docker
 
-before_script:
-  - mkdir -p ~/.docker/cli-plugins
-  - wget -O - https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.linux-amd64 > ~/.docker/cli-plugins/docker-buildx
-  - chmod a+x ~/.docker/cli-plugins/docker-buildx
-  - docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
-  - docker buildx create --use --name mybuilder
-
 script:
-  - echo "Build local image"
-  - docker login -u subham328 -p Ak@sh328
-  - travis_wait 30 docker buildx build --platform linux/amd64,linux/arm64 -t subham328/alpine-ci-tools:2.1 --push . > /dev/null 2>&1
+  - docker build
+    -t "lareeth/alpine-ci-tools:latest"
+    -t "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"
+    --build-arg VCS_REF=`git rev-parse --short HEAD` .
   - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" kubectl version --client
   - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm version --client
   - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm3 version --client
-  - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" az --version
-  - echo "Testing public image on Docker Hub"
-  - docker run -d --name alpine-ci-tools subham328/alpine-ci-tools:2.1
-  - docker ps -a
-  - docker logs alpine-ci-tools 
+  - docker run "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" az --version 
+
+before_deploy:
+  - docker login -u subhamkumarpuresoftware -p Ak@sh328
+  
+deploy:
+  provider: script
+  script: docker push "lareeth/alpine-ci-tools:latest" && docker push "lareeth/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"
+  on:
+    branch: master
+© 2021 GitHub, Inc.
