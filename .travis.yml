@@ -4,9 +4,12 @@ branches:
   only: 
     - master
     
-arch:
-  - amd64
-  - arm64
+jobs:
+  include:
+   - os: linux
+     arch: amd64
+   - os: linux
+     arch: arm64
    
 services:
   - docker
