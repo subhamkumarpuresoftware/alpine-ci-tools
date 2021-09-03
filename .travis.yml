@@ -15,24 +15,25 @@ services:
   - docker
 
 script:
-  - if  [`uname -m` = "aarch64" ]; then
-      - docker build
-        -t "subham328/alpine-ci-tools:latest-arm"
-        -t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"
-        --build-arg VCS_REF=`git rev-parse --short HEAD` .
-      - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" kubectl version --client
-      - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm version --client
-      - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm3 version --client
-      - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" az --version 
-    else 
-      - docker build
-        -t "subham328/alpine-ci-tools:latest"
-        -t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"
-        --build-arg VCS_REF=`git rev-parse --short HEAD` .
-      - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" kubectl version --client
-      - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm version --client
-      - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm3 version --client
-      - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" az --version 
+  - if [[ "${TRAVIS_CPU_ARCH}" == "arm64" ]]; then
+      docker build
+        t "subham328/alpine-ci-tools:latest-arm"
+        t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"
+        --build-arg VCS_REF=`git rev-parse --short HEAD` .;
+      docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" kubectl version --client;
+      docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm version --client;
+      docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm3 version --client;
+      docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" az --version; 
+    fi
+  - if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then 
+      docker build
+        t "subham328/alpine-ci-tools:latest"
+        t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"
+        --build-arg VCS_REF=`git rev-parse --short HEAD` . ;
+      docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" kubectl version --client;
+      docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm version --client;
+      docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm3 version --client;
+      docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" az --version ;
     fi
 
 before_deploy:
@@ -41,10 +42,11 @@ before_deploy:
 deploy:
   provider: script
   script: 
-    - if  [`uname -m` = "aarch64" ]; then
-      - docker push "subham328/alpine-ci-tools:latest-arm" && docker push "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"
-    else 
-      - docker push "subham328/alpine-ci-tools:latest" && docker push "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" 
-    fi
+    - if [[ "${TRAVIS_CPU_ARCH}" == "arm64" ]]; then
+        docker push "subham328/alpine-ci-tools:latest-arm" && docker push "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER";
+      fi
+    - if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then 
+        docker push "subham328/alpine-ci-tools:latest" && docker push "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" ;
+      fi
   on:
     branch: master
