@@ -21,8 +21,8 @@ script:
       arch=""
     fi
   docker build
-   -t "${USERNAME}/alpine-ci-tools:latest"{arch}""
-   -t "${USERNAME}/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"{arch}""
+   -t "${USERNAME}/alpine-ci-tools:latest'{arch}'"
+   -t "${USERNAME}/alpine-ci-tools:$TRAVIS_BUILD_NUMBER'{arch}'"
    --build-arg VCS_REF=`git rev-parse --short HEAD` .;
   docker run "${USERNAME}/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"{arch}"" kubectl version --client;
   docker run "${USERNAME}/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"{arch}"" helm version --client;
