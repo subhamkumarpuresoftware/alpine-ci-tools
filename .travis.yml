@@ -21,13 +21,13 @@ script:
       arch=""
     fi
   - docker build
-    -t "${USERNAME}/alpine-ci-tools:latest'{arch}'"
-    -t "${USERNAME}/alpine-ci-tools:$TRAVIS_BUILD_NUMBER'{arch}'"
+    -t "subham328/alpine-ci-tools:latest'{arch}'"
+    -t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER'{arch}'"
     --build-arg VCS_REF=`git rev-parse --short HEAD` .;
-  - docker run "${USERNAME}/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"{arch}"" kubectl version --client;
-  - docker run "${USERNAME}/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"{arch}"" helm version --client;
-  - docker run "${USERNAME}/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"{arch}"" helm3 version --client;
-  - docker run "${USERNAME}/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"{arch}"" az --version;
+  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"{arch}"" kubectl version --client;
+  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"{arch}"" helm version --client;
+  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"{arch}"" helm3 version --client;
+  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"{arch}"" az --version;
 
 before_deploy:
   - docker login -u subham328 -p Ak@sh328
@@ -36,9 +36,9 @@ deploy:
   provider: script
   script: 
     - if [ "${TRAVIS_CPU_ARCH}" != "arm64" ]; then
-        docker push "${USERNAME}/alpine-ci-tools:latest" && docker push "${USERNAME}/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" ;
+        docker push "subham328/alpine-ci-tools:latest" && docker push "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" ;
       else
-        docker push "${USERNAME}/alpine-ci-tools:latest-arm64" && docker push "${USERNAME}/alpine-ci-tools:$TRAVIS_BUILD_NUMBER-arm64" ;
+        docker push "subham328/alpine-ci-tools:latest-arm64" && docker push "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER-arm64" ;
       fi
   on:
     branch: master
