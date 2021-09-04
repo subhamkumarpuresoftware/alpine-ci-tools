@@ -26,10 +26,10 @@ script:
     -t "subham328/alpine-ci-tools:latest$arch"
     -t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch"
     --build-arg VCS_REF=`git rev-parse --short HEAD` .
-  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"${arch}"" kubectl version --client
-  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"${arch}"" helm version --client
-  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"${arch}"" helm3 version --client
-  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"${arch}"" az --version
+  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch" kubectl version --client
+  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch" helm version --client
+  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch" helm3 version --client
+  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch" az --version
 
 before_deploy:
   - docker login -u subham328 -p Ak@sh328
