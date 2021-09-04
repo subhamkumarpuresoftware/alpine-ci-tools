@@ -18,9 +18,9 @@ services:
 
 script:
   - if [ "${TRAVIS_CPU_ARCH}" == "arm64" ]; then
-      arch = "-arm64" ;
+      arch "-arm64" ;
     else
-      arch = "";
+      arch "";
     fi
   - docker build
     -t "subham328/alpine-ci-tools:latest"${arch}""
