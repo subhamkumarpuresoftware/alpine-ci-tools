@@ -10,16 +10,16 @@ jobs:
      arch: amd64
    - os: linux
      arch: arm64
-   
-services:
-  - docker
-
-script:
+env:
   - if [ "${TRAVIS_CPU_ARCH}" == "arm64" ]; then
       arch="-arm64"
     else
       arch=""
     fi
+services:
+  - docker
+
+script:
   - docker build
     -t "subham328/alpine-ci-tools:latest'{arch}'"
     -t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER'{arch}'"
