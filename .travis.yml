@@ -24,6 +24,7 @@ script:
     -t "subham328/alpine-ci-tools:latest$arch"
     -t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch"
     --build-arg VCS_REF=`git rev-parse --short HEAD` .
+    --build-arg ARCH="${TRAVIS_CPU_ARCH}"
   - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch" kubectl version --client
   - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch" helm version --client
   - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch" helm3 version --client
