@@ -7,7 +7,7 @@ LABEL org.label-schema.vcs-ref=$VCS_REF \
         org.label-schema.vcs-url="https://github.com/lareeth/alpine-ci-tools"
 
 ARG ARCH=amd64
-ARG KUBERNETES_VERSION=1.20
+ARG KUBERNETES_VERSION=1.15.11
 ARG HELM2_VERSION=2.17.0
 ARG HELM3_VERSION=3.6.3
 ARG AZURE_VERSION=2.27.2
