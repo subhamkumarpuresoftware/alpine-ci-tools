@@ -3,43 +3,34 @@ language: minimal
 branches:
   only: 
     - master
-    
-jobs:
-  include:
-   - os: linux
-     arch: amd64
-   - os: linux
-     arch: arm64
-     
+
 services:
   - docker
 
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+
 script:
-  - if [ "${TRAVIS_CPU_ARCH}" == "arm64" ]; then
-      arch='-arm64' ;
-    else
-      arch='';
-    fi
-  - docker build
-    -t "subham328/alpine-ci-tools:latest$arch"
-    -t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch"
+  - docker version
+  - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  - docker buildx version
+  - docker buildx create --use
+  - docker buildx build --load --platform linux/amd64
+    -t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"
     --build-arg VCS_REF=`git rev-parse --short HEAD` .
-    --build-arg ARCH="${TRAVIS_CPU_ARCH}"
-  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch" kubectl version --client
-  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch" helm version --client
-  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch" helm3 version --client
-  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER$arch" az --version
+  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" kubectl version --client
+  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm version --client
+  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm3 version --client
+  - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" az --version 
 
 before_deploy:
   - docker login -u subham328 -p Ak@sh328
-  
+
 deploy:
   provider: script
-  script: 
-    - if [ "${TRAVIS_CPU_ARCH}" != "arm64" ]; then
-        docker push "subham328/alpine-ci-tools:latest" && docker push "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" ;
-      else
-        docker push "subham328/alpine-ci-tools:latest-arm64" && docker push "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER-arm64" ;
-      fi
+  script: docker buildx build --push --platform linux/amd64,linux/arm64 -t "subham328/alpine-ci-tools:latest" -t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" --build-arg VCS_REF=`git rev-parse --short HEAD` .
   on:
     branch: master
