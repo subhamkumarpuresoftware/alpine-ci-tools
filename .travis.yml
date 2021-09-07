@@ -21,6 +21,7 @@ script:
   - docker buildx build --load --platform linux/amd64
     -t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER"
     --build-arg VCS_REF=`git rev-parse --short HEAD` .
+    >> 2>&1 | tee log1.txt
   - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" kubectl version --client
   - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm version --client
   - docker run "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" helm3 version --client
