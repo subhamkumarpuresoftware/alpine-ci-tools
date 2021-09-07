@@ -1,4 +1,4 @@
-FROM alpine:3.13.6
+FROM python:3-alpine
 MAINTAINER Gareth Luckett <gareth.luckett@gmail.com>
 
 ARG VCS_REF
