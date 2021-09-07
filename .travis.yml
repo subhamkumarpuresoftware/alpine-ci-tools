@@ -29,6 +29,6 @@ before_deploy:
 
 deploy:
   provider: script
-  script: docker buildx build --push --platform linux/amd64,linux/arm64 -t "subham328/alpine-ci-tools:latest" -t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" --build-arg VCS_REF=`git rev-parse --short HEAD` .
+  script: docker buildx build --push --platform linux/amd64,linux/arm64 -t "subham328/alpine-ci-tools:latest" -t "subham328/alpine-ci-tools:$TRAVIS_BUILD_NUMBER" --build-arg VCS_REF=`git rev-parse --short HEAD` . >> /dev/null 2>&1  
   on:
     branch: master
