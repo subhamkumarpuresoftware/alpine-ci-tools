@@ -1,4 +1,4 @@
-FROM python:3.6.14-alpine3.13
+FROM alpine:3
 MAINTAINER Gareth Luckett <gareth.luckett@gmail.com>
 
 ARG VCS_REF
@@ -8,8 +8,8 @@ LABEL org.label-schema.vcs-ref=$VCS_REF \
 
 ARG TARGETARCH
 ARG KUBERNETES_VERSION=1.15.11
-ARG HELM2_VERSION=2.17.0
-ARG HELM3_VERSION=3.6.3
+ARG HELM2_VERSION=2.16.3
+ARG HELM3_VERSION=3.1.2
 ARG AZURE_VERSION=2.27.2
 
 RUN apk add --update curl bash git
